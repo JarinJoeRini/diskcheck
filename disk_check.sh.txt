@@ -1,0 +1,30 @@
+
+Copy code
+#!/bin/bash
+
+# Set the threshold for disk usage (in percentage)
+THRESHOLD=90
+
+# Set the email address to receive notifications
+EMAIL_ADDRESS="your.email@example.com"
+
+while true; do
+    # Get the current disk usage
+    DISK_USAGE=$(df -h / | awk 'NR==2 {print $5}' | cut -d'%' -f1)
+
+    # Check if disk usage exceeds the threshold
+    if [ "$DISK_USAGE" -ge "$THRESHOLD" ]; then
+        # Send an email notification
+        SUBJECT="Disk Space Alert - $HOSTNAME"
+        MESSAGE="Disk space on $HOSTNAME is critically low. Disk usage: $DISK_USAGE%."
+
+        echo "$MESSAGE" | mail -s "$SUBJECT" "$EMAIL_ADDRESS"
+
+        # Optionally, you can perform additional actions here
+        # For example, execute a script or command
+        # /path/to/your/custom/script.sh
+    fi
+
+    # Wait for 5 minutes before checking again
+    sleep 300
+done
